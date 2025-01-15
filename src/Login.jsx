@@ -22,23 +22,11 @@ const Login = ()=>{
         e.preventDefault()
         try{
 
-            const res = await axios.post("http://localhost:2022/api/login",formData)
+            const res = await axios.post("http://localhost:2026/api/login",formData)
             console.log(res.data)
 
-            const { email ,password } = res.data;
-            
 
-            // if(email !== formData.email){
-            //     alert("Invalid EmailId")
-            //     return
-            // }
-
-            // if(password !==formData.password){
-            //    alert("Invalid Password")
-            //    return
-            // }
-
-            const { token }  = res.data
+            const token   = res.data.accessToken    // Assuming the token is returned as "token"
 
             // Save the JWT token to localStorage
             localStorage.setItem("authToken",token)
@@ -52,7 +40,7 @@ const Login = ()=>{
     }
 
     return(
-        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-zinc-800 bg-slate-100 rounded-2xl drop-shadow-md">
+        <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-zinc-800 bg-slate-100 rounded-2xl drop-shadow-md">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
             </div>
@@ -84,9 +72,9 @@ const Login = ()=>{
                 </div>
             </form>
 
-            <p class="mt-10 text-center text-sm/6 text-gray-500">
+            <p className="mt-10 text-center text-sm/6 text-gray-500">
             Not a member?
-            <Link to="/register" class="font-semibold text-orange-600 hover:text-orange-500">Please Sign Up</Link>
+            <Link to="/register" className="font-semibold text-orange-600 hover:text-orange-500">Please Sign Up</Link>
             </p>
 
             </div>

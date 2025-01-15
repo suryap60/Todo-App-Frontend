@@ -43,7 +43,7 @@ const SignUp = ()=>{
             return alert("Password must be between 8 and 20 characters long, contain at least one letter, one number, and one special character")
         }
 
-        const res = await axios.post("http://localhost:2022/api/register",formData)
+        const res = await axios.post("http://localhost:2026/api/register",formData)
         console.log(res.data)
         alert("Account Created Successfully")
         setFormData(sample)
@@ -57,7 +57,7 @@ const SignUp = ()=>{
    
 
     return(
-        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-zinc-800 bg-slate-100 rounded-2xl drop-shadow-md">
+        <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-zinc-800 bg-slate-100 rounded-2xl drop-shadow-md w-full max-w-4xl mx-auto min-w-full">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign Up to your account</h2>
             </div>
