@@ -22,8 +22,8 @@ const Todo = ()=>{
                 const res = await axios.get("http://localhost:2026/api/getTodos", {
                     headers: { authorization : `Bearer ${token}` },
                   });
-                  console.log(res)
-                  console.log("Response Data:", res.data);
+                //   console.log(res)
+                //   console.log("Response Data:", res.data);
                   setTodos(res.data.todos);
             }
             catch(error){
@@ -93,7 +93,7 @@ const Todo = ()=>{
         setEditIndex(index) // Set edit index to enable update mode
     }
 
-    const handleDelete = async(index)=>{
+    const handleDelete = async(index,id)=>{
         try{
             const todoDelete = todos[index]
 
@@ -104,11 +104,17 @@ const Todo = ()=>{
             });
 
              // Remove the todo locally (or set deleted to true)
-             const updateTodos = todos.map((todo,todoIndex)=>
-                todoIndex === index ? {...todo, deleted:true} :todo
+            //  const updateTodos = todos.map((todo,todoIndex)=>
+            //     todoIndex === index ? {...todo, deleted:true} :todo
+             
     
-            )
-            setTodos(updateTodos)
+            // )
+            // setTodos(updateTodos)
+
+            setTodos((prevTodos)=>{
+               return prevTodos.filter((todo)=>todo._id !== id)
+            })
+            
 
             console.log(
                 "deleted successfully"
@@ -119,6 +125,26 @@ const Todo = ()=>{
         }
     } 
 
+    const handleCompleted = async (index)=>{
+        try{
+            const todoComplete = todos[index]
+
+            const token = localStorage.getItem('authToken')
+
+            await axios.post(`http://localhost:2026/api/complete/${todoComplete._id}`,{},{
+                headers : { authorization : `Bearer ${token}` }
+            })
+
+            const updateTodos = [...todos];
+            updateTodos[index].completed = !updateTodos[index].completed;
+            setTodos(updateTodos)
+        }
+        catch(error){
+            console.log("error",error)
+        }
+    }
+
+   
 
 
     return(
@@ -126,17 +152,25 @@ const Todo = ()=>{
         
             <div className="flex flex-col md:flex-row justify-between gap-6" >
 
-                <div className="container p-6 rounded-lg shadow-lg max-w-2xl w-full md:w-[40%] mt-[-10px] bg-gradient-to-b from-slate-800 to-white-500">
+                <div className="container p-6 rounded-lg shadow-lg max-w-2xl w-full md:w-[35%] mt-[-10px] bg-gradient-to-b from-slate-800 to-white-500">
                     <h2 className="text-3xl text-white font-bold text-center mb-6">Todo List</h2>
                     <div >
                         {todos.map((todo,index)=>{
                             return(
-                                <div className={`container bg-stone-50 rounded-lg shadow-lg ${todo.deleted ? "todo-deleted" : ""}`} key={index}>
-                                    <h3 className="text-xl font-bold mb-3 mt-9 pt-5">{todo.title}</h3>
-                                    <p className="text-l mb-6">{todo.description}</p>
+                                <div className="container bg-stone-50 rounded-lg shadow-lg mb-6" key={index}>
+                                    <div className="flex  ps-5 items-center">
+                                        <input type="checkbox"
+                                            id="red-checkbox"
+                                            checked={todo.completed}
+                                            onChange={()=>handleCompleted(index)}
+                                            className="me-10 mt-12 transform scale-125 transition-all duration-300 cursor-pointer hover:scale-130"/>
+
+                                        <h3 className={`text-xl font-bold mb-3 ms-5 mt-9 pt-5 ${todo.completed ? 'line-through' : ''}`}>{todo.title}</h3>
+                                    </div>
+                                    <p className={`text-l mb-6 ${todo.completed ? 'line-through' : ''}`}>{todo.description}</p>
                                     <div className="flex justify-between">
-                                        <button className="bg-red-600 ms-6 mb-4 text-white hover:bg-red-400 focus:bg-red-900" onClick={()=>handleEdit(index)} disabled={todo.deleted}>Update</button>
-                                        <button className="bg-green-600 me-6 mb-4 text-white hover:bg-green-400 focus:bg-green-900" onClick={()=>handleDelete(index)} disabled={todo.deleted}>Delete</button>
+                                        <button className="bg-red-600 ms-6 mb-4 text-white hover:bg-red-400 focus:bg-red-900" onClick={()=>handleEdit(index)} >Update</button>
+                                        <button className="bg-green-600 me-6 mb-4 text-white hover:bg-green-400 focus:bg-green-900" onClick={()=>handleDelete(index,todo._id)} >Delete</button>
                                     </div>
                                 </div>
                             )

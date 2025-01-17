@@ -1,103 +1,138 @@
 import axios from "axios"
-import { useState } from "react"
-import './SignUp.css'
 import { Link } from "react-router-dom"
+import { useFormik } from "formik"
+import { ValidationSchema } from "./assets/ValidationSchema"
+import './SignUp.css'
+import { useState } from "react"
 
 
 const SignUp = ()=>{
 
-    const sample ={
+    const[isSignUp,setIsSignUp] = useState(false)
+
+    const initialValues ={
         userName:'',
         email:'',
         password:'',
     }
 
-    const [formData,setFormData] = useState(sample)
-    
-
-    const validPassword = (password)=>{
-        const passwordPattern = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,20}$/;
-        return passwordPattern.test(password)
-    }
-    
-    const validEmail = (email)=>{
-        const emailPattern =/^[^\s@]+@[^\s@]+\.[^\s@]+$/ ;
-        return emailPattern.test(email) 
-    }
-
-    const handleChange =(e)=>{
-        let temp ={}
-        temp[e.target.name] = e.target.value
-        setFormData({...formData,...temp})
-    }
-
-    const handleSubmit = async(e)=>{
-        e.preventDefault();
-        try{
-            
-        if(!validEmail(formData.email)){
-            return alert("Please Enter a validate email")
+    const { values , handleChange , handleSubmit , handleBlur , errors , touched} = useFormik({
+        initialValues:initialValues,
+        validationSchema:ValidationSchema, // <-- This is where the validate function is passed
+        onSubmit:async(values,action)=>{
+            try{
+                const response = await axios.post("http://localhost:2026/api/register",values)
+                console.log(response.data)
+                // alert("Account created Successfully")
+                setIsSignUp(true)
+                action.resetForm()
+            }catch(error){
+                console.log("error",error)
+            }
         }
+    })
 
-        if(!validPassword(formData.password)){
-            return alert("Password must be between 8 and 20 characters long, contain at least one letter, one number, and one special character")
-        }
-
-        const res = await axios.post("http://localhost:2026/api/register",formData)
-        console.log(res.data)
-        alert("Account Created Successfully")
-        setFormData(sample)
-        }
-        
-        catch(error){
-            console.log("error",error)
-        }
-        
-    }
    
 
     return(
-        <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-zinc-800 bg-slate-100 rounded-2xl drop-shadow-md w-full max-w-4xl mx-auto min-w-full">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign Up to your account</h2>
-            </div>
+        <div>
+            {
+                isSignUp? (
+                    <div className=" px-10 py-10 drop-shadow-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500">
+                        
+                        <h1 className="text-md fond-bold text-white mt-5 font-sans pb-10">SUCCESS!</h1>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <p className="font-semibold text-2xl font-sans mt-5 tracking-wider text-blue-950">Congratulation,your account <br />has been successfully created</p>
+                        <button className="mt-10 rounded-3xl px-10 font-sans hover:border-none  tracking-wider mt-14 mb-6 font-bold">
+                            <Link to={'/login'} className="text-black hover:text-blue-600">Continue</Link>
+                        </button>
+                        
 
-            <form className="space-y-6 " onSubmit={handleSubmit} action="#" method="POST">
-
-                <div>
-                    
-                    <div className="mt-2">
-                        <input type="text" placeholder="Enter Your UserName" name="userName" value={formData.userName} onChange={handleChange} required className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"/>
                     </div>
-                </div>
+                ): (
+                    <div className="bg-white px-10 py-10 drop-shadow-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500">
+                        <div className="sm:max-auto sm:w-full sm:max-w-sm ">
+                            <h2 className="font-bold  text-3xl pb-7">Create new account</h2>
+                        </div>
 
-                <div>
-                    
-                    <div className="mt-2">
-                        <input type="email" placeholder="Enter Valid Email" name="email" value={formData.email} onChange={handleChange} required className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"/>
+                        <div className="tracking-tight">
+
+                        <form  onSubmit={handleSubmit} action="#" method="POST" >
+
+                            <div>
+                                
+                                <div className="mt-2 ">
+                                    <input type="text" 
+                                    placeholder="Enter Your UserName" 
+                                    autoComplete='off'
+                                    autoSave='off'
+                                    name="userName" 
+                                    value={values.userName} 
+                                    onChange={handleChange} 
+                                    onBlur={handleBlur}
+                                    required 
+                                    className="block w-full rounded-md bg-white px-3 py-2.5 focus:outline-green-600 focus:outline text-base  border-slate-400 text-gray-900  placeholder:text-gray-400 focus:outline focus:outline-none sm:text-sm/6"/>
+                                    {touched.userName && errors.userName ? (
+                                        <p className="text-red-500 text-sm mt-1">{errors.userName}</p>
+                                    ):null}
+                                </div>
+                            </div>
+
+                            <div>
+                                
+                                <div className="mt-2">
+                                    <input type="email" 
+                                    placeholder="Enter Valid Email" 
+                                    autoComplete='off'
+                                    autoSave='off'
+                                    name="email" 
+                                    value={values.email} 
+                                    onChange={handleChange} 
+                                    onBlur={handleBlur}
+                                    required 
+                                    className="block w-full rounded-md bg-white px-3 py-2.5 focus:outline-green-600 focus:outline text-base  border-slate-400 text-gray-900  placeholder:text-gray-400 focus:outline mt-7 focus:outline-none sm:text-sm/6"/>
+
+                                    {touched.email && errors.email ? (
+                                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                    ):null}
+                                </div>
+                            </div>
+
+                            <div>
+                                
+                                <div className="mt-2">
+                                    <input type="password" 
+                                    placeholder="Enter valid password" 
+                                    autoComplete='off'
+                                    autoSave='off'
+                                    name="password" 
+                                    value={values.password} 
+                                    onChange={handleChange} 
+                                    onBlur={handleBlur}
+                                    required 
+                                    className="block w-full rounded-md mt-7 bg-white px-3 py-2.5 focus:outline-green-600 focus:outline text-base  border-slate-400 text-gray-900  placeholder:text-gray-400 focus:outline focus:outline-none sm:text-sm/6"/>
+                                    {touched.password && errors.password ? (
+                                        <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                                    ):null}
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit"
+                                autoSave='off'
+                                className="flex w-full justify-center mt-9 rounded-3xl bg-green-600 px-3 py-1.5  text-md font-semibold text-white  hover:bg-green-500 hover:border-none">Sign in</button>
+                            </div>
+                        </form>
+
+                        <p className="mt-10 text-center text-sm/6 font-bold text-gray-100">
+                        Already have an account ?
+                        <Link to="/login" className="text-green-950 font-semibold hover:text-blue-800 hover:underline"> Sign In now</Link>
+                        </p>
+
+                        </div>
                     </div>
-                </div>
-
-                <div>
-                    
-                    <div className="mt-2">
-                        <input type="password" placeholder="Enter valid password" name="password" value={formData.password} onChange={handleChange} required className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"/>
-                    </div>
-                </div>
-
-                <div>
-                    <button type="submit" className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">Sign in</button>
-                </div>
-            </form>
-
-            <p class="mt-10 text-center text-sm/6 text-gray-500">
-            Already Registered?
-            <Link to="/login" class="font-semibold text-green-600 hover:text-green-500">Please Sign In</Link>
-            </p>
-
-            </div>
+                )
+            }
         </div>
     )
 
@@ -105,12 +140,3 @@ const SignUp = ()=>{
 
 export default SignUp
 
-{/* <div className="signup-container">
-            <h1 className="signup-header">Sign Up</h1>
-            <form className="signup-form" onSubmit={handleSubmit}>
-                <input className="input-box" type="text" placeholder="Enter Your UserName" name="userName" value={formData.userName} onChange={handleChange} required/> <br />
-                <input className="input-box" type="email" placeholder="Enter Valid Email" name="email" value={formData.email} onChange={handleChange} required/> <br />
-                <input className="input-box" type="password" placeholder="Enter valid password" name="password" value={formData.password} onChange={handleChange} required/> <br />
-                <button className="submit-btn" type="submit">Submit</button>
-            </form>
-        </div> */}
