@@ -26,7 +26,7 @@ const Login = ()=>{
     //     });
     // }
     
-    const formik = useFormik({
+    const { values , handleSubmit , handleChange , handleBlur , errors , touched} = useFormik({
         initialValues:initialValues,
         validationSchema:ValidationSchema,
         onSubmit:async(values) =>{
@@ -62,20 +62,20 @@ const Login = ()=>{
 
                         
                         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form className="space-y-6 "  onSubmit={formik.handleSubmit}>
+                        <form className="space-y-6 "  onSubmit={handleSubmit}>
                         <div>
                             <div className="mt-2">
                                 <input type="text" 
                                 placeholder="Enter Your Email" 
                                 autoComplete="off"
                                 name="email" 
-                                value={formik.values.email} 
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur} 
+                                value={values.email} 
+                                onChange={handleChange}
+                                onBlur={handleBlur} 
                                 required 
                                 className="block w-full  bg-black w-64  bg-transparent px-2 py-1.5 text-base text-white font-medium border-b-2 placeholder:text-white outline-none "/>
-                                {formik.errors.email && formik.touched.email ?(
-                                <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p> 
+                                {errors.email && touched.email ?(
+                                <p className="text-red-500 text-sm mt-1">{errors.email}</p> 
                                 ):null}
                             </div>
                         </div>
@@ -87,13 +87,13 @@ const Login = ()=>{
                                 placeholder="Enter Your Password" 
                                 autoComplete="off"
                                 name="password" 
-                                value={formik.values.password} 
-                                onChange={formik.handleChange} 
-                                onBlur={formik.handleBlur}
+                                value={values.password} 
+                                onChange={handleChange} 
+                                onBlur={handleBlur}
                                 required 
                                 className="block w-full w-64 mt-10 bg-transparent px-2 py-1.5 text-base text-white font-medium bg-black border-b-2 placeholder:text-white outline-none  "/>
-                                {formik.touched.password && formik.errors.password ? (
-                                    <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
+                                {touched.password && errors.password ? (
+                                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                                 ):null}
                             </div>
 

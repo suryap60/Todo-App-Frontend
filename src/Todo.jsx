@@ -193,7 +193,7 @@ const Todo = ()=>{
                         <div  className="flex items-end space-x-6">
 
                             <div className="w-1/3">
-                                <label  className="block text-sm font-medium text-gray-700 text-white">Title</label>
+                                <label  className="block text-sm font-medium text-gray-200 text-white">Title</label>
 
                                 <input
                                 type="text" 
@@ -206,7 +206,7 @@ const Todo = ()=>{
 
                 
                             <div className="w-1/3">
-                                <label className="block text-sm font-medium text-gray-700 text-white">Description</label>
+                                <label className="block text-sm font-medium text-gray-200 text-white">Description</label>
 
                                 <input
                                 type="text"
