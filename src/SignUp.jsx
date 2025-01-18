@@ -16,7 +16,7 @@ const SignUp = ()=>{
         password:'',
     }
 
-    const { values , handleChange , handleSubmit , handleBlur , errors , touched} = useFormik({
+    const { values , handleChange , handleSubmit , handleBlur , errors , touched , setFieldError } = useFormik({
         initialValues:initialValues,
         validationSchema:ValidationSchema, // <-- This is where the validate function is passed
         onSubmit:async(values,action)=>{
@@ -27,7 +27,13 @@ const SignUp = ()=>{
                 setIsSignUp(true)
                 action.resetForm()
             }catch(error){
-                console.log("error",error)
+                if (error.response && error.response.status === 409) {
+                    const errorMessage = error.response.data.message || '*This email is already registered';
+                    setFieldError("email", errorMessage);  // Set field-level error for email
+                } else {
+                    // Handle other types of errors here (e.g., server errors, etc.)
+                    setFieldError("email", "There was an error while creating your account. Please try again.");
+                }
             }
         }
     })
@@ -120,7 +126,7 @@ const SignUp = ()=>{
                             <div>
                                 <button type="submit"
                                 autoSave='off'
-                                className="flex w-full justify-center mt-9 rounded-3xl bg-green-600 px-3 py-1.5  text-md font-semibold text-white  hover:bg-green-500 hover:border-none">Sign in</button>
+                                className="flex w-full justify-center mt-9 rounded-3xl bg-green-600 px-3 py-1.5  text-md font-semibold text-white  hover:bg-green-500 hover:border-none">Sign Up</button>
                             </div>
                         </form>
 

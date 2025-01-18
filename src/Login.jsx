@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useFormik } from "formik"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ValidationSchema } from "./assets/ValidationSchema"
 import { useState } from "react"
 import Todo from "./Todo"
@@ -8,20 +8,28 @@ import Todo from "./Todo"
 
 const Login = ()=>{
 
-    const sample ={
+    const [isLogin,setIsLogin] = useState(false)
+
+    // const navigate = useNavigate()
+    const initialValues ={
         email:'',
         password:'',
     }
+    // const [details, setDetails] = useState([]);
     
-
-    const [isLogin,setIsLogin] = useState(false)
+    // const handleChange =(e)=>{
+    //     const temp = {}
+    //     temp[e.target.name] = e.target.value
+    //     setFormData({
+    //         ...formData,
+    //         temp
+    //     });
+    // }
     
-
     const formik = useFormik({
-        initialValues:sample,
+        initialValues:initialValues,
         validationSchema:ValidationSchema,
-        onSubmit:async(values)=>{
-
+        onSubmit:async(values) =>{
             try{
 
                 const res = await axios.post("http://localhost:2026/api/login",values)
@@ -29,8 +37,9 @@ const Login = ()=>{
                 const token   = res.data.accessToken    // Assuming the token is returned as "token" 
                 // Save the JWT token to localStorage
                 localStorage.setItem("authToken",token)
-                setIsLogin(true)   
-                
+                // setDetails([res.data])
+                setIsLogin(true)     
+                // navigate('/todolist')
     
             }
             catch(error){
@@ -53,7 +62,7 @@ const Login = ()=>{
 
                         
                         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-                        <form className="space-y-6 "  method="POST" onSubmit={formik.handleSubmit}>
+                        <form className="space-y-6 "  onSubmit={formik.handleSubmit}>
                         <div>
                             <div className="mt-2">
                                 <input type="text" 

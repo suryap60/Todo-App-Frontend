@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import './App.css'
   
 const Todo = ()=>{
@@ -8,6 +8,9 @@ const Todo = ()=>{
     const [todos,setTodos] = useState([])
     const [editIndex,setEditIndex] = useState(null)
 
+    //create reference for form
+    const formRef = useRef(null)
+    const submitRef = useRef([])
     // Fetch todos when the component mounts
     useEffect(()=>{
         const fetchToken = async()=>{
@@ -44,7 +47,7 @@ const Todo = ()=>{
         }
         else{
             try{
-                if(editIndex !==null){
+                if(editIndex !==null){ 
                     
                     const todoToUpdate = todos[editIndex];
                     // console.log('payload:',{title,description})
@@ -63,6 +66,7 @@ const Todo = ()=>{
                     setEditIndex(null)
                     setTitle('');
                     setDescription('');
+                    submitRef.current.scrollIntoView({behavior:"smooth",block:"start"})
                 }else{
                     const newTodo = {title,description}
                     await axios.post('http://localhost:2026/api/todo', newTodo, {
@@ -73,7 +77,7 @@ const Todo = ()=>{
                       setTodos([...todos,newTodo])
                       setTitle('');  // Reset input fields
                       setDescription('')  // Reset input fields
-                
+                    //   submitRef.current.scrollIntoView({behavior:"smooth",block:"start"})
                 }
 
                 
@@ -91,6 +95,8 @@ const Todo = ()=>{
         setTitle(todo.title)
         setDescription(todo.description)
         setEditIndex(index) // Set edit index to enable update mode
+        
+        formRef.current.scrollIntoView({behavior:"smooth",block:"start"})
     }
 
     const handleDelete = async(index,id)=>{
@@ -165,7 +171,7 @@ const Todo = ()=>{
                                             onChange={()=>handleCompleted(index)}
                                             className="me-10 mt-12 transform scale-125 transition-all duration-300 cursor-pointer hover:scale-130"/>
 
-                                        <h3 className={`text-xl font-bold mb-3 ms-5 mt-9 pt-5 ${todo.completed ? 'line-through' : ''}`}>{todo.title}</h3>
+                                        <h3 ref={submitRef} className={`text-xl font-bold mb-3 ms-5 mt-9 pt-5 ${todo.completed ? 'line-through' : ''}`}>{todo.title}</h3>
                                     </div>
                                     <p className={`text-l mb-6 ${todo.completed ? 'line-through' : ''}`}>{todo.description}</p>
                                     <div className="flex justify-between">
@@ -180,7 +186,7 @@ const Todo = ()=>{
 
                 </div>
                 
-                <div className="container p-6 bg-slate-800 rounded-lg shadow-lg max-w-2xl w-full md:w-[60%] mt-[-10px] h-[250px]">
+                <div ref={formRef} className="container p-6 bg-slate-800 rounded-lg shadow-lg max-w-2xl w-full md:w-[60%] mt-[-10px] h-[250px]">
                     <h2 className="text-3xl font-bold text-center mb-6 text-white">Todo App</h2>
 
                     <form action="" onSubmit={handleSubmit}>
