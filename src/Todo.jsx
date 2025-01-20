@@ -125,23 +125,24 @@ const Todo = () => {
     }
   };
 
-  const handleCompleted = async (index) => {
+  const handleCompleted = async (id) => {
     try {
-      const todoComplete = todos[index];
-
       const token = localStorage.getItem("authToken");
 
-      await axios.post(
-        `http://localhost:2026/api/complete/${todoComplete._id}`,
-        {},
+      await axios.put(
+        `http://localhost:2026/api/complete/${id}`,{},
         {
           headers: { authorization: token },
         }
       );
 
-      const updateTodos = [...todos];
-      updateTodos[index].completed = !updateTodos[index].completed;
-      setTodos(updateTodos);
+      const updatedTodos = todos.map(todo =>
+        todo._id === id ? { ...todo, completed: !todo.completed } : todo
+      );
+      
+      // Set the updated todos state
+      setTodos(updatedTodos);
+
     } catch (error) {
       console.log("error", error);
     }
@@ -166,7 +167,7 @@ const Todo = () => {
                       type="checkbox"
                       id="red-checkbox"
                       checked={todo.completed}
-                      onChange={() => handleCompleted(index)}
+                      onChange={() => handleCompleted(todo?._id)}
                       className="me-10 mt-12 transform scale-125 transition-all duration-300 cursor-pointer hover:scale-130"
                     />
 

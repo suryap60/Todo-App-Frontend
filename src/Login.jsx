@@ -104,7 +104,7 @@ const Login = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     required
-                    className="block w-full w-64 mt-10 px-2 py-1.5 text-base text-white font-medium bg-black border-b-2 placeholder:text-white outline-none  "
+                    className="block w-full  bg-black w-64  bg-transparent px-2 py-1.5 text-base text-white font-medium border-b-2 placeholder:text-white outline-none "
                   />
                   {touched.password && errors.password ? (
                     <p className="text-red-500 text-sm mt-1">
@@ -113,25 +113,12 @@ const Login = () => {
                   ) : null}
                 </div>
 
-                <div className="flex items-center justify-end">
-                  <div className="text-sm mt-2">
-                    <a
-                      href="#"
-                      className="font-semibold text-gray-900 hover:text-gray-700 justify-end"
-                    >
-                      Forgot password?
-                    </a>
-                  </div>
-                </div>
+               
               </div>
 
               <div>
                 <button
                   // type="button"
-                  // onClick={()=>{
-                  //     console.log("Submit button clicked ")
-                  //     handleSubmit()
-                  // }}
                   className="flex w-full mt-10 justify-center rounded-3xl bg-orange-600 px-3 py-1.5 text-md font-semibold text-white shadow-sm hover:bg-orange-500 boder-none focus:border-none hover:border-none"
                 >
                   Sign in
