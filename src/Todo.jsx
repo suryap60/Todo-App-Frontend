@@ -159,7 +159,7 @@ const Todo = () => {
             {todos?.map((todo, index) => {
               return (
                 <div
-                  className="container bg-stone-50 rounded-lg shadow-lg mb-6"
+                ref={submitRef} className="container bg-stone-50 rounded-lg shadow-lg mb-6"
                   key={index}
                 >
                   <div className="flex  ps-5 items-center">
@@ -172,7 +172,7 @@ const Todo = () => {
                     />
 
                     <h3
-                      ref={submitRef}
+                     
                       className={`text-xl font-bold mb-3 ms-5 mt-9 pt-5 ${
                         todo.completed ? "line-through" : ""
                       }`}
