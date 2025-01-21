@@ -46,11 +46,30 @@ const Login = () => {
         navigate("/todolist");
        
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          setFieldError("Invalid email or password. Please try again.");
+        if (error.response) {
+          const errorMessage = error.response.data.message; // Backend sends error messages in `message`
+          
+          // Handling for specific errors based on the backend response
+          if (error.response.status === 404 && errorMessage === "Email does not exist") {
+            setFieldError("email", "Email does not exist.");
+          } else if (error.response.status === 404 && errorMessage === "Password is incorrect") {
+            setFieldError("password", "Password is incorrect.");
+          } else {
+            // Handle any other error that might occur
+            setFieldError("email", "An error occurred. Please try again later.");
+            setFieldError("password", "An error occurred. Please try again later.");
+          }
+        } 
+        else if (error.request) {
+          // Handle network errors (request sent but no response received)
+          setFieldError("email", "Network error. Please check your connection.");
+          setFieldError("password", "Network error. Please check your connection.");
         } else {
-          setFieldError("An error occurred. Please try again later.");
+          // Handle any other unexpected errors
+          setFieldError("email", "An unexpected error occurred. Please try again.");
+          setFieldError("password", "An unexpected error occurred. Please try again.");
         }
+      
       }
     },
   });

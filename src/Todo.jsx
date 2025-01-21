@@ -7,28 +7,27 @@ const Todo = () => {
   const [description, setDescription] = useState("");
   const [editId, setEditId] = useState("");
   const [todos, setTodos] = useState([]);
-//   const [editIndex, setEditIndex] = useState(null);
   const [response, setResponse] = useState([]);
 
   //create reference for form
   const formRef = useRef(null);
   const submitRef = useRef([]);
+
   // Fetch todos when the component mounts
   useEffect(() => {
     const fetchToken = async () => {
       const token = localStorage.getItem("authToken");
       if (!token) {
-        console.log("No token found, redirecting to login...");
+        
         // Redirect to login if no token is found
         window.location.href = "/login";
-        // navigate('/login')
+        
       } else {
         try {
           const res = await axios.get("http://localhost:2026/api/getTodos", {
             headers: { authorization: token },
           });
-          //   console.log(res)
-          //   console.log("Response Data:", res.data);
+          
           setTodos(res.data.todos);
         } catch (error) {
           console.log("error", error);
@@ -39,8 +38,7 @@ const Todo = () => {
     fetchToken();
   }, [submitRef]);
 
-  console.log(response);
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,9 +78,9 @@ const Todo = () => {
               },
             }
           );
-            console.log(response.data.todo)
+          
             // Update the todos state with the new todo
-         setTodos( response.data.todo);
+           setTodos( response.data.todo);
             
         //   setResponse(response.data.todo.todo);
           setTitle(""); // Reset input fields
@@ -119,7 +117,6 @@ const Todo = () => {
         return prevTodos.filter((todo) => todo._id !== id);
       });
 
-      console.log("deleted successfully");
     } catch (error) {
       console.log("error", error.message);
     }

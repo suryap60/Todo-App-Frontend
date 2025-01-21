@@ -30,7 +30,7 @@ const SignUp = () => {
           "http://localhost:2026/api/register",
           values
         );
-        console.log(response.data);
+       
         // alert("Account created Successfully")
         setIsSignUp(true);
         action.resetForm();
@@ -144,7 +144,7 @@ const SignUp = () => {
               <div>
                 <button
                 //   type="submit"
-                //   autoSave="off"
+                  autoSave="off"
                   className="flex w-full justify-center mt-9 rounded-3xl bg-green-600 px-3 py-1.5  text-md font-semibold text-white  hover:bg-green-500 hover:border-none"
                 >
                   Sign Up
@@ -158,7 +158,7 @@ const SignUp = () => {
                 to="/login"
                 className="text-green-950 font-semibold hover:text-blue-800 hover:underline"
               >
-                {" "}
+
                 Sign In now
               </Link>
             </p>
