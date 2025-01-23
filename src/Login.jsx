@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Todo from "./Todo";
 import { LoginValidationSchema } from "./assets/loginSchema";
+import Swal from 'sweetalert2'
+
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -14,6 +16,55 @@ const Login = () => {
     email: "",
     password: "",
   };
+
+  const onSubmit = async (values, action) => {
+      try {
+
+        const response = await axios.post(
+          "http://localhost:2026/api/login",
+          values
+        );
+
+        const token   = response.data.accessToken    // Assuming the token is returned as "token"
+        // Save the JWT token to localStorage
+        localStorage.setItem("authToken",token)
+        // setDetails([res.data])
+        action.resetForm();
+        setIsLogin(true);
+        navigate('/todolist')
+        Swal.fire({
+          icon: "success",
+          title: "Your Login Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        
+        // navigate("/todolist");
+       
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = error.response.data.message; // Backend sends error messages in `message`
+          
+          // Handling for specific errors based on the backend response
+          if (error.response.status === 404 && errorMessage === "Email does not exist") {
+            Swal.fire({
+              title: "Incorrect EmailId",
+              text: "The email that you've entered is incorrect.Please try again.",
+            });
+          } 
+          if (error.response.status === 400 && errorMessage === "Password is incorrect") {
+            Swal.fire({
+              title: "Incorrect Password",
+              text: "The password that you've entered is incorrect.Please try again.",
+            });
+          } 
+         
+        } 
+        
+      
+      }
+    }
+  
 
   const {
     values,
@@ -26,52 +77,7 @@ const Login = () => {
   } = useFormik({
     initialValues: initialValues,
     validationSchema: LoginValidationSchema,
-    onSubmit: async (values, action) => {
-      try {
-        console.log("Submitting with values:", values);
-
-        const response = await axios.post(
-          "http://localhost:2026/api/login",
-          values
-        );
-
-        console.log("API Response:", response.data); // Check if this log works
-        const token   = response.data.accessToken    // Assuming the token is returned as "token"
-        // Save the JWT token to localStorage
-        localStorage.setItem("authToken",token)
-        // setDetails([res.data])
-        action.resetForm();
-        setIsLogin(true);
-        
-        navigate("/todolist");
-       
-      } catch (error) {
-        if (error.response) {
-          const errorMessage = error.response.data.message; // Backend sends error messages in `message`
-          
-          // Handling for specific errors based on the backend response
-          if (error.response.status === 404 && errorMessage === "Email does not exist") {
-            setFieldError("email", "Email does not exist.");
-          } else if (error.response.status === 404 && errorMessage === "Password is incorrect") {
-            setFieldError("password", "Password is incorrect.");
-          } else {
-            // Handle any other error that might occur
-            setFieldError("email", "An error occurred. Please try again later.");
-            setFieldError("password", "An error occurred. Please try again later.");
-          }
-        } 
-        else if (error.request) {
-          // Handle network errors (request sent but no response received)
-          setFieldError("email", "Network error. Please check your connection.");
-          setFieldError("password", "Network error. Please check your connection.");
-        } else {
-          // Handle any other unexpected errors
-          setFieldError("email", "An unexpected error occurred. Please try again.");
-          setFieldError("password", "An unexpected error occurred. Please try again.");
-        }
-      
-      }
-    },
+    onSubmit:onSubmit,
   });
 
   return (
@@ -137,7 +143,7 @@ const Login = () => {
 
               <div>
                 <button
-                  // type="button"
+                  
                   className="flex w-full mt-10 justify-center rounded-3xl bg-orange-600 px-3 py-1.5 text-md font-semibold text-white shadow-sm hover:bg-orange-500 boder-none focus:border-none hover:border-none"
                 >
                   Sign in

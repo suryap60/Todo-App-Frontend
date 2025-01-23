@@ -1,11 +1,13 @@
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { ValidationSchema } from "./assets/ValidationSchema";
 import { useState } from "react";
+import Swal from 'sweetalert2'
 
 const SignUp = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
+  // const [isSignUp, setIsSignUp] = useState(false);
+  const navigation = useNavigate()
 
   const initialValues = {
     userName: "",
@@ -26,18 +28,23 @@ const SignUp = () => {
     validationSchema: ValidationSchema, // <-- This is where the validate function is passed
     onSubmit: async (values, action) => {
       try {
-        const response = await axios.post(
+        await axios.post(
           "http://localhost:2026/api/register",
           values
         );
        
         // alert("Account created Successfully")
-        setIsSignUp(true);
+        // setIsSignUp(true);
         action.resetForm();
+        Swal.fire({
+          title: "Success!",
+          text: " Congratulation,your account has been successfully created",
+          icon: "success"
+        });
+        navigation('/login')
       } catch (error) {
         if (error.response && error.response.status === 409) {
-          const errorMessage =
-            error.response.data.message || "*This email is already registered";
+          const errorMessage = error.response.data.message || "*This email is already registered";
           setFieldError("email", errorMessage); // Set field-level error for email
         } else {
           // Handle other types of errors here (e.g., server errors, etc.)
@@ -52,23 +59,6 @@ const SignUp = () => {
 
   return (
     <div>
-      {isSignUp ? (
-        <div className=" px-10 py-10 drop-shadow-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500">
-          <h1 className="text-md fond-bold text-white mt-5 font-sans pb-10">
-            SUCCESS!
-          </h1>
-
-          <p className="font-semibold text-2xl font-sans mt-5 tracking-wider text-blue-950">
-            Congratulation,your account <br />
-            has been successfully created
-          </p>
-          <button className="mt-10 rounded-3xl px-10 font-sans hover:border-none  tracking-wider mt-14 mb-6 font-bold">
-            <Link to={"/login"} className="text-black hover:text-blue-600">
-              Continue
-            </Link>
-          </button>
-        </div>
-      ) : (
         <div className="bg-white px-10 py-10 drop-shadow-xl rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500">
           <div className="sm:max-auto sm:w-full sm:max-w-sm ">
             <h2 className="font-bold  text-3xl pb-7">Create new account</h2>
@@ -164,7 +154,6 @@ const SignUp = () => {
             </p>
           </div>
         </div>
-      )}
     </div>
   );
 };

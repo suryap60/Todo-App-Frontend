@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "proxy": "http://localhost:2026",
-
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,6 +16,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.1",
+    "sweetalert2": "^11.15.10",
     "yup": "^1.6.1"
   },
   "devDependencies": {

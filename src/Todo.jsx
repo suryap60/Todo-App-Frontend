@@ -86,10 +86,7 @@ const Todo = () => {
           setTitle(""); // Reset input fields
           setDescription(""); // Reset input fields
           
-          submitRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+          
         }
       } catch (error) {
         console.log("error", error);
