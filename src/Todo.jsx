@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 const Todo = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editId, setEditId] = useState("");
   const [todos, setTodos] = useState([]);
-  const [response, setResponse] = useState([]);
+
+  const navigate = useNavigate()
 
   //create reference for form
   const formRef = useRef(null);
@@ -85,7 +88,10 @@ const Todo = () => {
         //   setResponse(response.data.todo.todo);
           setTitle(""); // Reset input fields
           setDescription(""); // Reset input fields
-          
+          submitRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
           
         }
       } catch (error) {
@@ -141,6 +147,19 @@ const Todo = () => {
       console.log("error", error);
     }
   };
+
+  const handleLogOut = async()=>{
+    navigate('/login')
+    await Swal.fire({
+              icon: "success",
+              title: "Your Logout Successfully",
+              showConfirmButton: false,
+              timer: 5000
+            });
+
+    
+
+  }
 
   return (
     <div className="min-h-screen ">
@@ -249,6 +268,13 @@ const Todo = () => {
               </div>
             </div>
           </form>
+        </div>
+        <div >
+         <form onSubmit={handleLogOut}>
+          <button type="submit" >
+              Logout
+            </button>
+         </form>
         </div>
       </div>
     </div>
